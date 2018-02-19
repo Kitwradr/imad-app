@@ -9,18 +9,109 @@ app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'index.html'));
 });
 
+var articles  = {
+articleOne : {
+  title:'Suhas HE| Article one' , 
+  heading:'Article one' ,
+  date : 'Feb 19 2018'  ,
+  content:`
+  <p>
+      This is the content for my first article.This is the content for my first article.
+      This is the content for my first article.This is the content for my first article.
+      This is the content for my first article.
+  </p>
+  <p>
+      This is the content for my first article.This is the content for my first article.
+      This is the content for my first article.This is the content for my first article.
+      This is the content for my first article.
+  </p>
+  <p>
+      This is the content for my first article.This is the content for my first article.
+      This is the content for my first article.This is the content for my first article.
+      This is the content for my first article.
+  </p>
+  `
+} , 
+articleTwo:{
+  title:'Suhas HE| Article two' , 
+  heading:'Article two' ,
+  date : 'Feb 20 2018'  ,
+  content:`
+  <p>
+      This is the content for my second article.This is the content for my first article.
+  
+  `
+},
+articleThree: {
+  title:'Suhas HE| Article three' , 
+  heading:'Article three' ,
+  date : 'Feb 20 2018'  ,
+  content:`
+  <p>
+      This is the content for my third article.This is the content for my first article.
+  
+  `
+}
+};
+
+function createTemplate (data) {
+    var title = data.title;
+    var date = data.date;
+    var heading = data.heading;
+    var content = data.content;
+
+    var htmlTemplate = `
+    <html>
+      <head>
+          <title>
+              ${title}
+          </title>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link href="/ui/style.css" rel="stylesheet" />
+      </head>
+      <body>
+          <div class="container">
+              <div>
+                  <a href="/">Home</a>
+              </div>
+              <hr/>
+              <h3>
+                  ${heading}
+              </h3>
+              <div>
+                  ${date.toDateString()}
+              </div>
+              <div>
+                ${content}
+              </div>
+              <hr/>
+              <h4>Comments</h4>
+              <div id="comment_form">
+              </div>
+              <div id="comments">
+                <center>Loading comments...</center>
+              </div>
+          </div>
+          <script type="text/javascript" src="/ui/article.js"></script>
+      </body>
+    </html>
+    `;
+    return htmlTemplate;
+}
 
 
-app.get('/article-one' , function(req ,res){
-  res.sendFile(path.join(__dirname, 'ui', 'article-one.html'));
+app.get('/:articleName' , function(req ,res){
+  var articleName = req.param.articleName;
+  res.send(createTemplate(articles[articleName]));
+  //res.sendFile(path.join(__dirname, 'ui', 'article-one.html'));
 });
 
-app.get('/article-two' , function(req ,res){
-  res.sendFile(path.join(__dirname, 'ui', 'article-two.html'));
-});
-app.get('/article-three' , function(req ,res){
-  res.sendFile(path.join(__dirname, 'ui', 'article-three.html'));
-});
+// app.get('/article-two' , function(req ,res){
+//   res.sendFile(path.join(__dirname, 'ui', 'article-two.html'));
+// });
+// app.get('/article-three' , function(req ,res){
+//   res.sendFile(path.join(__dirname, 'ui', 'article-three.html'));
+// });
 app.get('/ui/style.css', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'style.css'));
 });
