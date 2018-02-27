@@ -1,80 +1,54 @@
 var express = require('express');
-var morgan = require('morgan');//output logs
+var morgan = require('morgan');
 var path = require('path');
 var Pool = require('pg').Pool;
 
 var config = {
-    user: 'suhas2ab' ,
-    database:'suhas2ab',
+    user: 'suhas2ab',
+    database: 'suhas2ab',
     host: 'db.imad.hasura-app.io',
-    port: '8080',
+    port: '22',
     password: process.env.DB_PASSWORD
-}
+};
 
 var app = express();
 app.use(morgan('combined'));
 
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'ui', 'index.html'));
-});
 
-var pool = new Pool(config)
-
-app.get('test-db',function(req,res){
-    //make a select requesst
-    //return a  response
-    pool.query('SELECT * FROM test' , function(err,result){
-        if(err){
-        res.status(500).send(err.toString());
-    }else{
-        res.send(JSON.strings(result));
+var articles = {
+    'article-one': {
+      title: 'Article One | Suhas',
+      heading: 'Article One',
+      date: 'Sep 5, 2016',
+      content: `
+          <p>
+              This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. 
+          </p>
+          <p>
+              This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. 
+          </p>
+          <p>
+              This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. 
+          </p>`
+    },
+    'article-two': {
+      title: 'Article Two | Suhas',
+      heading: 'Article Two',
+      date: 'Sep 10, 2016',
+      content: `
+          <p>
+              This is the content for my second article.
+          </p>`
+    },
+    'article-three': {
+      title: 'Article Three | Suhas',
+      heading: 'Article Three',
+      date: 'Sep 15, 2016',
+      content: `
+          <p>
+              This is the content for my third article.
+          </p>`
     }
-    });
-});
-
-var articles  = {
-articleOne : {
-  title:'Suhas HE| Article one' , 
-  heading:'Article one' ,
-  date : 'Feb 19 2018'  ,
-  content:`
-  <p>
-      This is the content for my first article.This is the content for my first article.
-      This is the content for my first article.This is the content for my first article.
-      This is the content for my first article.
-  </p>
-  <p>
-      This is the content for my first article.This is the content for my first article.
-      This is the content for my first article.This is the content for my first article.
-      This is the content for my first article.
-  </p>
-  <p>
-      This is the content for my first article.This is the content for my first article.
-      This is the content for my first article.This is the content for my first article.
-      This is the content for my first article.
-  </p>
-  `
-} , 
-articleTwo:{
-  title:'Suhas HE| Article two' , 
-  heading:'Article two' ,
-  date : 'Feb 20 2018'  ,
-  content:`
-  <p>
-      This is the content for my second article.This is the content for my first article.
-  
-  `
-},
-articleThree: {
-  title:'Suhas HE| Article three' , 
-  heading:'Article three' ,
-  date : 'Feb 20 2018'  ,
-  content:`
-  <p>
-      This is the content for my third article.This is the content for my first article.
-  
-  `
-}
 };
 
 function createTemplate (data) {
@@ -82,7 +56,7 @@ function createTemplate (data) {
     var date = data.date;
     var heading = data.heading;
     var content = data.content;
-
+    
     var htmlTemplate = `
     <html>
       <head>
@@ -91,7 +65,7 @@ function createTemplate (data) {
           </title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link href="/ui/style.css" rel="stylesheet" />
-      </head>
+      </head> 
       <body>
           <div class="container">
               <div>
@@ -102,11 +76,11 @@ function createTemplate (data) {
                   ${heading}
               </h3>
               <div>
-                  ${date.toDateString()}
+                  ${date}
               </div>
               <div>
                 ${content}
-              </div>              
+              </div>
           </div>
       </body>
     </html>
@@ -114,46 +88,59 @@ function createTemplate (data) {
     return htmlTemplate;
 }
 
-var counter =0;
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'index.html'));
+});
 
-app.get('/counter' , function(req,res){
-  counter = counter +1;
-  res.send(counter.toString());
+var pool = new Pool(config);
+app.get('/test-db', function (req, res) {
+   // make a select request
+   // return a response with the results
+   pool.query('SELECT * FROM test', function (err, result) {
+      if (err) {
+          res.status(500).send(err.toString());
+      } else {
+          res.send(JSON.stringify(result));
+      }
+   });
+});
 
+var counter = 0;
+app.get('/counter', function (req, res) {
+   counter = counter + 1;
+   res.send(counter.toString());
+});
+
+var names = [];
+app.get('/submit-name', function(req, res) { // /submit-name?name=xxxx
+  // Get the name from the request
+  var name = req.query.name;
+  
+  names.push(name);
+  // JSON: Javascript Object Notation
+  res.send(JSON.stringify(names));
+});
+
+app.get('/:articleName', function (req, res) {
+  // articleName == article-one
+  // articles[articleName] == {} content object for article one
+  var articleName = req.params.articleName;
+  res.send(createTemplate(articles[articleName]));
+});
+
+app.get('/ui/style.css', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'style.css'));
 });
 
 app.get('/ui/main.js', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'main.js'));
 });
 
-app.get('/:articleName' , function(req ,res){
-  var articleName = req.param.articleName;
-  res.send(createTemplate(articles[articleName]));
-  //res.sendFile(path.join(__dirname, 'ui', 'article-one.html'));
+app.get('/ui/Portrait.png', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'Portrait.png'));
 });
 
-// app.get('/article-two' , function(req ,res){
-//   res.sendFile(path.join(__dirname, 'ui', 'article-two.html'));
-// });
-// app.get('/article-three' , function(req ,res){
-//   res.sendFile(path.join(__dirname, 'ui', 'article-three.html'));
-// });
-app.get('/ui/style.css', function (req, res) {
-  res.sendFile(path.join(__dirname, 'ui', 'style.css'));
-});
-
-app.get('/ui/madi.png', function (req, res) {
-  res.sendFile(path.join(__dirname, 'ui', 'madi.png'));
-});
-app.get('/ui/Portrait.jpg', function (req, res) {
-  res.sendFile(path.join(__dirname, 'ui', 'Portrait.jpg'));
-});
-
-
-// Do not change port, otherwise your app won't run on IMAD servers
-// Use 8080 only for local development if you already have apache running on 80
-
-var port = 80;
-app.listen(port, function () {
+var port = 8080; // Use 8080 for local development because you might already have apache running on 80
+app.listen(8080, function () {
   console.log(`IMAD course app listening on port ${port}!`);
 });
