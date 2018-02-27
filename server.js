@@ -1,4 +1,4 @@
-var express = require('express')
+var express = require('express');
 var morgan = require('morgan');//output logs
 var path = require('path');
 var Pool = require('pg').Pool;
@@ -32,40 +32,49 @@ app.get('test-db',function(req,res){
     });
 });
 
-var articles = {
-    'article-one': {
-      title: 'Article One | Suhas',
-      heading: 'Article One',
-      date: 'Sep 5, 2016',
-      content: `
-          <p>
-              This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. 
-          </p>
-          <p>
-              This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. 
-          </p>
-          <p>
-              This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. 
-          </p>`
-    },
-    'article-two': {
-      title: 'Article Two | Suhas',
-      heading: 'Article Two',
-      date: 'Sep 10, 2016',
-      content: `
-          <p>
-              This is the content for my second article.
-          </p>`
-    },
-    'article-three': {
-      title: 'Article Three | Suhas',
-      heading: 'Article Three',
-      date: 'Sep 15, 2016',
-      content: `
-          <p>
-              This is the content for my third article.
-          </p>`
-    }
+var articles  = {
+articleOne : {
+  title:'Suhas HE| Article one' , 
+  heading:'Article one' ,
+  date : 'Feb 19 2018'  ,
+  content:`
+  <p>
+      This is the content for my first article.This is the content for my first article.
+      This is the content for my first article.This is the content for my first article.
+      This is the content for my first article.
+  </p>
+  <p>
+      This is the content for my first article.This is the content for my first article.
+      This is the content for my first article.This is the content for my first article.
+      This is the content for my first article.
+  </p>
+  <p>
+      This is the content for my first article.This is the content for my first article.
+      This is the content for my first article.This is the content for my first article.
+      This is the content for my first article.
+  </p>
+  `
+} , 
+articleTwo:{
+  title:'Suhas HE| Article two' , 
+  heading:'Article two' ,
+  date : 'Feb 20 2018'  ,
+  content:`
+  <p>
+      This is the content for my second article.This is the content for my first article.
+  
+  `
+},
+articleThree: {
+  title:'Suhas HE| Article three' , 
+  heading:'Article three' ,
+  date : 'Feb 20 2018'  ,
+  content:`
+  <p>
+      This is the content for my third article.This is the content for my first article.
+  
+  `
+}
 };
 
 function createTemplate (data) {
@@ -73,7 +82,7 @@ function createTemplate (data) {
     var date = data.date;
     var heading = data.heading;
     var content = data.content;
-    
+
     var htmlTemplate = `
     <html>
       <head>
@@ -82,7 +91,7 @@ function createTemplate (data) {
           </title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link href="/ui/style.css" rel="stylesheet" />
-      </head> 
+      </head>
       <body>
           <div class="container">
               <div>
@@ -93,11 +102,11 @@ function createTemplate (data) {
                   ${heading}
               </h3>
               <div>
-                  ${date}
+                  ${date.toDateString()}
               </div>
               <div>
                 ${content}
-              </div>
+              </div>              
           </div>
       </body>
     </html>
@@ -117,14 +126,18 @@ app.get('/ui/main.js', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'main.js'));
 });
 
-app.get('/:articleName', function (req, res) {
-  // articleName == article-one
-  // articles[articleName] == {} content object for article one
-  var articleName = req.params.articleName;
+app.get('/:articleName' , function(req ,res){
+  var articleName = req.param.articleName;
   res.send(createTemplate(articles[articleName]));
+  //res.sendFile(path.join(__dirname, 'ui', 'article-one.html'));
 });
 
-
+// app.get('/article-two' , function(req ,res){
+//   res.sendFile(path.join(__dirname, 'ui', 'article-two.html'));
+// });
+// app.get('/article-three' , function(req ,res){
+//   res.sendFile(path.join(__dirname, 'ui', 'article-three.html'));
+// });
 app.get('/ui/style.css', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'style.css'));
 });
