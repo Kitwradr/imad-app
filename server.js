@@ -32,49 +32,40 @@ app.get('test-db',function(req,res){
     });
 });
 
-var articles  = {
-articleOne : {
-  title:'Suhas HE| Article one' , 
-  heading:'Article one' ,
-  date : 'Feb 19 2018'  ,
-  content:`
-  <p>
-      This is the content for my first article.This is the content for my first article.
-      This is the content for my first article.This is the content for my first article.
-      This is the content for my first article.
-  </p>
-  <p>
-      This is the content for my first article.This is the content for my first article.
-      This is the content for my first article.This is the content for my first article.
-      This is the content for my first article.
-  </p>
-  <p>
-      This is the content for my first article.This is the content for my first article.
-      This is the content for my first article.This is the content for my first article.
-      This is the content for my first article.
-  </p>
-  `
-} , 
-articleTwo:{
-  title:'Suhas HE| Article two' , 
-  heading:'Article two' ,
-  date : 'Feb 20 2018'  ,
-  content:`
-  <p>
-      This is the content for my second article.This is the content for my first article.
-  
-  `
-},
-articleThree: {
-  title:'Suhas HE| Article three' , 
-  heading:'Article three' ,
-  date : 'Feb 20 2018'  ,
-  content:`
-  <p>
-      This is the content for my third article.This is the content for my first article.
-  
-  `
-}
+var articles = {
+    'article-one': {
+      title: 'Article One | Suhas',
+      heading: 'Article One',
+      date: 'Sep 5, 2016',
+      content: `
+          <p>
+              This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. 
+          </p>
+          <p>
+              This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. 
+          </p>
+          <p>
+              This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. This is the content for my first article. 
+          </p>`
+    },
+    'article-two': {
+      title: 'Article Two | Suhas',
+      heading: 'Article Two',
+      date: 'Sep 10, 2016',
+      content: `
+          <p>
+              This is the content for my second article.
+          </p>`
+    },
+    'article-three': {
+      title: 'Article Three | Suhas',
+      heading: 'Article Three',
+      date: 'Sep 15, 2016',
+      content: `
+          <p>
+              This is the content for my third article.
+          </p>`
+    }
 };
 
 function createTemplate (data) {
@@ -82,7 +73,7 @@ function createTemplate (data) {
     var date = data.date;
     var heading = data.heading;
     var content = data.content;
-
+    
     var htmlTemplate = `
     <html>
       <head>
@@ -91,7 +82,7 @@ function createTemplate (data) {
           </title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link href="/ui/style.css" rel="stylesheet" />
-      </head>
+      </head> 
       <body>
           <div class="container">
               <div>
@@ -102,11 +93,11 @@ function createTemplate (data) {
                   ${heading}
               </h3>
               <div>
-                  ${date.toDateString()}
+                  ${date}
               </div>
               <div>
                 ${content}
-              </div>              
+              </div>
           </div>
       </body>
     </html>
