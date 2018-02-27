@@ -68,6 +68,13 @@ var articles = {
     }
 };
 
+var data ={
+    title : "",
+    date : "",
+    heading : '',
+    content :""
+}
+
 function createTemplate (data) {
     var title = data.title;
     var date = data.date;
